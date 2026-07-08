@@ -25,10 +25,14 @@ class S3Client implements ICanWriteToStorage
 	/** @var string The name of the bucket used for the backend */
 	protected $bucket;
 
-	public function __construct(Configuration $config, string $bucket)
+	/** @var string Optional key prefix for tenant isolation (e.g. "std1.udp.social") */
+	protected $prefix;
+
+	public function __construct(Configuration $config, string $bucket, string $prefix = '')
 	{
 		$this->connector = new Connector($config);
 		$this->bucket    = $bucket;
+		$this->prefix    = rtrim($prefix, '/');
 	}
 
 	/**
@@ -44,7 +48,8 @@ class S3Client implements ICanWriteToStorage
 		$fold2 = substr($reference, 2, 2);
 		$file  = substr($reference, 4);
 
-		return implode('/', [$fold1, $fold2, $file]);
+		$path = implode('/', [$fold1, $fold2, $file]);
+		return empty($this->prefix) ? $path : $this->prefix . '/' . $path;
 	}
 
 	/** {@inheritDoc} */

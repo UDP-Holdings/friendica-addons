@@ -29,7 +29,7 @@ function s3_storage_instance(array &$data)
 {
 	if ($data['name'] == S3Client::getName()) {
 		$config          = new S3Config(DI::l10n(), DI::config());
-		$data['storage'] = new S3Client($config->getConfig(), $config->getBucket());
+		$data['storage'] = new S3Client($config->getConfig(), $config->getBucket(), $config->getPrefix());
 	}
 }
 

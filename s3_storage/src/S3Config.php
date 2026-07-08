@@ -53,6 +53,9 @@ class S3Config implements ICanConfigureStorage
 	/** @var bool */
 	private $dualStack;
 
+	/** @var string */
+	private $prefix;
+
 	public function __construct(L10n $l10n, IManageConfigValues $config)
 	{
 		$this->l10n   = $l10n;
@@ -66,6 +69,7 @@ class S3Config implements ICanConfigureStorage
 		$this->dualStack       = !empty($this->config->get('s3', 'dual_stack'));
 		$this->region          = $this->config->get('s3', 'region');
 		$this->endpoint        = $this->config->get('s3', 'endpoint');
+		$this->prefix          = $this->config->get('s3', 'path', '');
 	}
 
 	/**
@@ -85,7 +89,7 @@ class S3Config implements ICanConfigureStorage
 		if (!empty($this->endpoint)) {
 			$config->setEndpoint($this->endpoint);
 		}
-		if (!empty($this->signatureMethod) && empty($this->endpoint)) {
+		if (!empty($this->signatureMethod)) {
 			$config->setSignatureMethod($this->signatureMethod);
 		}
 
@@ -95,6 +99,11 @@ class S3Config implements ICanConfigureStorage
 	public function getBucket(): string
 	{
 		return $this->bucket;
+	}
+
+	public function getPrefix(): string
+	{
+		return $this->prefix ?? '';
 	}
 
 	/**
